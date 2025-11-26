@@ -22,4 +22,7 @@ Thumbs.db
 .idea/
 
 # Arquivos de cache
-*.logcertificados/
+*.log
+
+# Diretório de certificados (não commitar chaves privadas)
+certificados/
