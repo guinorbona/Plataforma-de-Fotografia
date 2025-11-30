@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container">
+  <div class="section-header">
+    <div>
+      <h1>Galeria - <%= event.eventName %></h1>
+      <p>Gerencie as fotos deste evento. As imagens são carregadas por URL.</p>
+    </div>
+    <a href="/galeria/<%= event.id %>/nova" class="btn btn-primary">Adicionar imagem</a>
+  </div>
+
+  <% if (photos && photos.length) { %>
+    <div class="gallery-grid">
+      <% photos.forEach(p => { %>
+        <article class="gallery-item">
+          <div class="gallery-thumb">
+            <img src="<%= p.imageUrl %>" alt="<%= p.title || 'Foto' %>">
+          </div>
+          <div class="gallery-body">
+            <h3><%= p.title || 'Sem título' %></h3>
+            <% if (p.caption) { %>
+              <p class="caption"><%= p.caption %></p>
+            <% } %>
+            <div class="gallery-actions">
+              <a href="/galeria/<%= event.id %>/<%= p.id %>/editar" class="btn btn-outline btn-small">Editar</a>
+              <form action="/galeria/<%= event.id %>/<%= p.id %>/excluir" method="POST" class="inline-form" onsubmit="return confirm('Excluir esta imagem?');">
+                <button type="submit" class="btn btn-danger btn-small">Excluir</button>
+              </form>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p>Nenhuma imagem cadastrada para este evento.</p>
+  <% } %>
+
+  <p>
+    <a href="/eventos" class="btn btn-outline">Voltar para eventos</a>
+  </p>
+</main>
+
+<%- include('../partials/footer') %>

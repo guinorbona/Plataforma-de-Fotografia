@@ -1,51 +1,37 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Portfólio | Fotógrafo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-</head>
+<main class="container">
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Organize seus <span>eventos fotográficos</span> em um só lugar.</h1>
+      <p>Gerencie eventos, clientes e galerias de fotos com praticidade. Tudo online, com acesso seguro.</p>
+      <div class="hero-actions">
+        <a href="/auth/login" class="btn btn-primary">Entrar</a>
+        <a href="/auth/register" class="btn btn-outline">Criar conta</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.pexels.com/photos/1444444/pexels-photo-1444444.jpeg" alt="Fotógrafo em ação">
+    </div>
+  </section>
 
-<body>
-    <header>
-        <div class="container">
-            <h1 class="logo">Fotógrafo</h1>
-            <nav>
-                <a href="/">Início</a>
-                <a href="/login">Login</a>
-                <a href="/sobre">Sobre</a>
-                <a href="/galeria">Galeria</a>
-            </nav>
-        </div>
-    </header>
+  <section class="section">
+    <h2>Eventos recentes</h2>
+    <div class="cards-grid">
+      <% if (eventosRecentes && eventosRecentes.length) { %>
+        <% eventosRecentes.forEach(e => { %>
+          <article class="card">
+            <h3><%= e.eventName %></h3>
+            <p><strong>Data:</strong> <%= e.eventDate %></p>
+            <a href="/eventos" class="btn btn-secondary btn-small">Ver meus eventos</a>
+          </article>
+        <% }) %>
+      <% } else { %>
+        <p>Nenhum evento registrado ainda.</p>
+      <% } %>
+    </div>
+  </section>
+</main>
 
-    <main class="container">
-        <h2>Galeria de Destaques</h2>
-        <div class="galeria">
-            <figure>
-                <img src="img/casamento.jpg" alt="Foto 1">
-                <figcaption>Celebrando o amor e a união com muita emoção</figcaption>
-            </figure>
-            <figure>
-                <img src="img/ensaio_gestante.jpg" alt="Foto 2">
-                <figcaption>Celebrando a vida que está por vir</figcaption>
-            </figure>
-
-            <figure>
-                <img src="img/bailarina.jpg" alt="Foto 3">
-                <figcaption>A arte da dança capturada em um instante mágico</figcaption>
-
-            </figure>
-
-        </div>
-
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Fotógrafo Profissional</p>
-    </footer>
-</body>
-
-</html>
+<%- include('partials/footer') %>

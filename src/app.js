@@ -1,24 +1,47 @@
 const express = require('express');
+const path = require('path');
+const session = require('express-session');
+require('dotenv').config();
+
+const indexRoutes = require('./routes/indexRoutes');
+const authRoutes = require('./routes/authRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const galleryRoutes = require('./routes/galleryRoutes');
+const userRoutes = require('./routes/userRoutes');
+
 const app = express();
 
-// Aqui você deve desenvolver toda a configuração do seu app. 
+// Configurações básicas
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-//ATENÇÂO NÃO COLOQUE O COMANDO app.listen nesse arquivo. Ele já está no server, que é o arquivo principal da sua aplicação. 
-
-// Para iniciar sua aplicação digite nodemon server.js
-
-app.set("view engine", "ejs");
-app.set('views', './views'); //Definição do local das views
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('./../public'));
 
-const routes = require('./routes/routes');
+// Autenticação básica
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'segredo-super-seguro',
+  resave: false,
+  saveUninitialized: false
+}));
 
-routes.index(app);
-routes.login(app);
-routes.sobre(app);
-routes.galeria(app);
-// routes.maisDetalhes(app); // em dev...
-routes.naoEncontrado(app);
+// Middleware para deixar user e role acessíveis nas views
+app.use((req, res, next) => {
+  res.locals.currentUser = req.session.user || null;
+  res.locals.isAdmin = req.session.user && req.session.user.role === 'admin';
+  next();
+});
+
+// Rotas
+app.use('/', indexRoutes);
+app.use('/auth', authRoutes);
+app.use('/eventos', eventRoutes);
+app.use('/galeria', galleryRoutes);
+app.use('/admin/usuarios', userRoutes);
+
+// 404
+app.use((req, res) => {
+  res.status(404).render('404', { title: 'Página não encontrada' });
+});
 
 module.exports = app;

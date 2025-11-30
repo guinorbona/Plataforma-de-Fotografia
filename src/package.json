@@ -1,0 +1,22 @@
+{
+  "name": "projeto-eventos-fotograficos",
+  "version": "1.0.0",
+  "description": "Sistema de gerenciamento de eventos fotograficos (MVC, EJS, mysql2, Joi)",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^16.0.0",
+    "ejs": "^3.1.9",
+    "express": "^4.19.0",
+    "express-session": "^1.17.3",
+    "joi": "^17.13.0",
+    "mysql2": "^3.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

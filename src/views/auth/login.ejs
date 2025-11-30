@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container auth-container">
+  <h1>Login</h1>
+
+  <% if (globalError) { %>
+    <div class="form-card" style="border-color:#fb7185; margin-bottom:1rem;">
+      <p style="color:#fb7185; margin:0;"><%= globalError %></p>
+    </div>
+  <% } %>
+
+  <form action="/auth/login" method="POST" class="form-card">
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        required
+        value="<%= old.email || '' %>"
+      />
+      <% if (errors && errors.email) { %>
+        <small class="error"><%= errors.email %></small>
+      <% } %>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <div class="password-wrapper">
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          minlength="6"
+        />
+          <span class="material-icons password-toggle">visibility</span>
+      </div>
+      <% if (errors && errors.password) { %>
+        <small class="error"><%= errors.password %></small>
+      <% } %>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Entrar</button>
+
+    <p class="auth-link">
+      Não tem conta? <a href="/auth/register">Cadastre-se</a>
+    </p>
+  </form>
+</main>
+
+<%- include('../partials/footer') %>
