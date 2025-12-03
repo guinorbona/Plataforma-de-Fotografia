@@ -1,0 +1,25 @@
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a href="/" class="logo">Plataforma de Fotografia</span></a>
+
+    <nav class="nav">
+      <a href="/">Home</a>
+
+      <% if (currentUser) { %>
+        <a href="/eventos">Meus Eventos</a>
+        <% if (isAdmin) { %>
+          <a href="/admin/usuarios">Usuários</a>
+          <% } %>
+            <form action="/auth/logout" method="POST" class="inline-form">
+              <button type="submit" class="btn btn-outline">
+                Sair (<%= currentUser.name %>)
+              </button>
+            </form>
+            <% } else { %>
+              <a href="/auth/login">Login</a>
+              <a href="/auth/register" class="btn btn-primary btn-small">Cadastrar</a>
+              <% } %>
+    </nav>
+
+  </div>
+</header>

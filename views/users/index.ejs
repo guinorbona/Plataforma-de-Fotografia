@@ -1,0 +1,66 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container">
+  <div class="section-header">
+    <h1>Gerenciamento de Usuários</h1>
+    <a href="/admin/usuarios/novo" class="btn btn-primary">Novo Usuário</a>
+  </div>
+
+  <form method="GET" class="form-card" style="margin-bottom: 1rem;">
+    <div class="form-group">
+      <label for="name">Nome</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        value="<%= filters && filters.name ? filters.name : '' %>"
+        placeholder="Buscar pelo nome..."
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="role">Perfil</label>
+      <select id="role" name="role">
+        <option value="">Todos</option>
+        <option value="admin" <%= filters && filters.role === 'admin' ? 'selected' : '' %>>Admin</option>
+        <option value="cliente" <%= filters && filters.role === 'cliente' ? 'selected' : '' %>>Cliente</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-small">Filtrar</button>
+    <a href="/admin/usuarios" class="btn btn-outline btn-small">Limpar</a>
+  </form>
+
+  <% if (users && users.length) { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Perfil</th>
+          <th class="actions-col">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(u => { %>
+          <tr>
+            <td><%= u.name %></td>
+            <td><%= u.email %></td>
+            <td><%= u.role %></td>
+            <td class="actions-col">
+              <a href="/admin/usuarios/<%= u.id %>/editar" class="btn btn-outline btn-small">Editar</a>
+              <form action="/admin/usuarios/<%= u.id %>/excluir" method="POST" class="inline-form" onsubmit="return confirm('Excluir este usuário?');">
+                <button type="submit" class="btn btn-danger btn-small">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>Nenhum usuário cadastrado.</p>
+  <% } %>
+</main>
+
+<%- include('../partials/footer') %>

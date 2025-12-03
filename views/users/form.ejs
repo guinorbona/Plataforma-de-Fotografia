@@ -1,0 +1,54 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container">
+  <h1><%= title %></h1>
+
+  <form action="<%= action %>" method="POST" class="form-card">
+    <div class="form-group">
+      <label for="name">Nome</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        minlength="3"
+        value="<%= user.name || '' %>"
+      />
+      <% if (errors && errors.name) { %>
+        <small class="error"><%= errors.name %></small>
+      <% } %>
+    </div>
+
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        required
+        value="<%= user.email || '' %>"
+      />
+      <% if (errors && errors.email) { %>
+        <small class="error"><%= errors.email %></small>
+      <% } %>
+    </div>
+
+    <div class="form-group">
+      <label for="role">Perfil</label>
+      <select id="role" name="role" required>
+        <option value="">Selecione...</option>
+        <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+        <option value="cliente" <%= user.role === 'cliente' ? 'selected' : '' %>>Cliente</option>
+      </select>
+      <% if (errors && errors.role) { %>
+        <small class="error"><%= errors.role %></small>
+      <% } %>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="/admin/usuarios" class="btn btn-outline">Cancelar</a>
+  </form>
+</main>
+
+<%- include('../partials/footer') %>

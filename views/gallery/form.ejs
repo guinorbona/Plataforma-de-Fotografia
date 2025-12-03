@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="container">
+  <h1><%= title %></h1>
+
+  <form action="<%= action %>" method="POST" class="form-card">
+    <div class="form-group">
+      <label for="title">Título da imagem</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        value="<%= photo.title || '' %>"
+      />
+      <% if (errors && errors.title) { %>
+        <small class="error"><%= errors.title %></small>
+      <% } %>
+    </div>
+
+    <div class="form-group">
+      <label for="caption">Legenda</label>
+      <textarea
+        id="caption"
+        name="caption"
+        rows="3"
+      ><%= photo.caption || '' %></textarea>
+      <% if (errors && errors.caption) { %>
+        <small class="error"><%= errors.caption %></small>
+      <% } %>
+    </div>
+
+    <div class="form-group">
+      <label for="imageUrl">URL da imagem</label>
+      <input
+        type="url"
+        id="imageUrl"
+        name="imageUrl"
+        required
+        placeholder="https://..."
+        value="<%= photo.imageUrl || '' %>"
+      />
+      <% if (errors && errors.imageUrl) { %>
+        <small class="error"><%= errors.imageUrl %></small>
+      <% } %>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="/galeria/<%= eventId %>" class="btn btn-outline">Cancelar</a>
+  </form>
+</main>
+
+<%- include('../partials/footer') %>
