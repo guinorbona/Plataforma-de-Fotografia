@@ -7,54 +7,17 @@
     <a href="/eventos/novo" class="btn btn-primary">Novo Evento</a>
   </div>
 
-  <form method="GET" class="form-card" style="margin-bottom: 1rem;">
-    <div class="form-group">
-      <label for="search">Nome do evento</label>
-      <input
-        type="text"
-        id="search"
-        name="search"
-        value="<%= filters && filters.search ? filters.search : '' %>"
-        placeholder="Buscar pelo nome..."
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="date">Data do evento</label>
-      <% const today = new Date().toISOString().split('T')[0]; %>
-      <input
-        type="date"
-        id="date"
-        name="date"
-        min="1900-01-01"
-        max="<%= today %>"
-        value="<%= filters && filters.date ? filters.date : '' %>"
-      />
-    </div>
-
-    <% if (isAdmin) { %>
-      <div class="form-group">
-        <label for="clientName">Cliente</label>
-        <input
-          type="text"
-          id="clientName"
-          name="clientName"
-          value="<%= filters && filters.clientName ? filters.clientName : '' %>"
-          placeholder="Nome do cliente..."
-        />
-      </div>
-    <% } %>
-
-    <button type="submit" class="btn btn-primary btn-small">Filtrar</button>
-    <a href="/eventos" class="btn btn-outline btn-small">Limpar</a>
-  </form>
+  <!-- Form de filtros aqui, se já tiver -->
 
   <% if (eventos && eventos.length) { %>
     <table class="table">
       <thead>
         <tr>
-          <th>Nome</th>
+          <th>Evento</th>
           <th>Data</th>
+          <% if (isAdmin) { %>
+            <th>Cliente</th>
+          <% } %>
           <th class="actions-col">Ações</th>
         </tr>
       </thead>
@@ -63,6 +26,9 @@
           <tr>
             <td><%= e.eventName %></td>
             <td><%= e.eventDate %></td>
+            <% if (isAdmin) { %>
+              <td><%= e.userName || e.userId %></td>
+            <% } %>
             <td class="actions-col">
               <a href="/galeria/<%= e.id %>" class="btn btn-secondary btn-small">Galeria</a>
               <a href="/eventos/<%= e.id %>/editar" class="btn btn-outline btn-small">Editar</a>
@@ -75,7 +41,7 @@
       </tbody>
     </table>
   <% } else { %>
-    <p>Você ainda não possui eventos cadastrados.</p>
+    <p><%= isAdmin ? 'Nenhum evento cadastrado.' : 'Você ainda não possui eventos cadastrados.' %></p>
   <% } %>
 </main>
 

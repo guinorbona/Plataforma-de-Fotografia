@@ -12,24 +12,6 @@
       </div>
     </div>
     <div class="hero-image">
-      <img src="https://images.pexels.com/photos/1444444/pexels-photo-1444444.jpeg" alt="Fotógrafo em ação">
-    </div>
-  </section>
-
-  <section class="section">
-    <h2>Eventos recentes</h2>
-    <div class="cards-grid">
-      <% if (eventosRecentes && eventosRecentes.length) { %>
-        <% eventosRecentes.forEach(e => { %>
-          <article class="card">
-            <h3><%= e.eventName %></h3>
-            <p><strong>Data:</strong> <%= e.eventDate %></p>
-            <a href="/eventos" class="btn btn-secondary btn-small">Ver meus eventos</a>
-          </article>
-        <% }) %>
-      <% } else { %>
-        <p>Nenhum evento registrado ainda.</p>
-      <% } %>
     </div>
   </section>
 </main>

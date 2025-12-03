@@ -6,31 +6,32 @@ const Photo = require('../models/Photo');
 exports.listEventGallery = async (req, res) => {
   const { eventId } = req.params;
   const userId = req.session.user.id;
+  const isAdmin = req.session.user.role === 'admin';
 
   try {
-    // 1 Buscar evento no banco
     const event = await Event.findById(eventId);
 
-    // 2 Garantir que o evento existe e é do usuário logado
-    if (!event || event.userId !== userId) {
+    // Cliente só acessa eventos próprios; admin acessa qualquer um
+    if (!event || (!isAdmin && event.userId !== userId)) {
       return res.status(404).send('Evento não encontrado.');
+      // se preferir, pode usar:
+      // return res.status(404).render('404', { title: 'Evento não encontrado' });
     }
 
-    // 3 Buscar fotos desse evento
     const photosDb = await Photo.findByEvent(eventId);
 
-    // 4 Mapear campos do banco para o que a view espera
     const photos = photosDb.map(p => ({
       id: p.id,
-      title: p.originalName,   
-      caption: '',             
-      imageUrl: p.path        
+      title: p.originalName,
+      caption: p.caption || '',
+      imageUrl: p.path
     }));
 
     res.render('gallery/index', {
       title: `Galeria - ${event.eventName}`,
       event,
-      photos
+      photos,
+      isAdmin
     });
   } catch (err) {
     console.error('Erro ao carregar galeria:', err);
@@ -42,11 +43,12 @@ exports.listEventGallery = async (req, res) => {
 exports.getAddPhoto = async (req, res) => {
   const { eventId } = req.params;
   const userId = req.session.user.id;
+  const isAdmin = req.session.user.role === 'admin';
 
   try {
     const event = await Event.findById(eventId);
 
-    if (!event || event.userId !== userId) {
+    if (!event || (!isAdmin && event.userId !== userId)) {
       return res.status(404).send('Evento não encontrado.');
     }
 
@@ -67,8 +69,8 @@ exports.getAddPhoto = async (req, res) => {
 exports.postAddPhoto = async (req, res) => {
   const { eventId } = req.params;
   const userId = req.session.user.id;
+  const isAdmin = req.session.user.role === 'admin';
 
-  // Validação com Joi (title, caption, imageUrl)
   const { error } = photoSchema.validate(req.body, { abortEarly: false });
 
   let errors = {};
@@ -82,7 +84,7 @@ exports.postAddPhoto = async (req, res) => {
   try {
     const event = await Event.findById(eventId);
 
-    if (!event || event.userId !== userId) {
+    if (!event || (!isAdmin && event.userId !== userId)) {
       return res.status(404).send('Evento não encontrado.');
     }
 
@@ -96,16 +98,16 @@ exports.postAddPhoto = async (req, res) => {
       });
     }
 
-    // Montar dados para o banco
     const originalName = req.body.title || 'Sem título';
     const fileName = originalName
       .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // tira acento
-      .replace(/\s+/g, '-'); // espaços → -
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '-');
 
-    const path = req.body.imageUrl; // URL da imagem
+    const path = req.body.imageUrl;
+    const caption = req.body.caption || null;
 
-    await Photo.create(eventId, { originalName, fileName, path });
+    await Photo.create(eventId, { originalName, fileName, path, caption });
 
     res.redirect(`/galeria/${eventId}`);
   } catch (err) {
@@ -118,11 +120,12 @@ exports.postAddPhoto = async (req, res) => {
 exports.getEditPhoto = async (req, res) => {
   const { eventId, photoId } = req.params;
   const userId = req.session.user.id;
+  const isAdmin = req.session.user.role === 'admin';
 
   try {
     const event = await Event.findById(eventId);
 
-    if (!event || event.userId !== userId) {
+    if (!event || (!isAdmin && event.userId !== userId)) {
       return res.status(404).send('Evento não encontrado.');
     }
 
@@ -132,11 +135,10 @@ exports.getEditPhoto = async (req, res) => {
       return res.status(404).send('Foto não encontrada.');
     }
 
-    // Adaptar para a view
     const photo = {
       id: photoDb.id,
       title: photoDb.originalName,
-      caption: '',
+      caption: photoDb.caption || '',
       imageUrl: photoDb.path
     };
 
@@ -157,6 +159,7 @@ exports.getEditPhoto = async (req, res) => {
 exports.postEditPhoto = async (req, res) => {
   const { eventId, photoId } = req.params;
   const userId = req.session.user.id;
+  const isAdmin = req.session.user.role === 'admin';
 
   const { error } = photoSchema.validate(req.body, { abortEarly: false });
 
@@ -171,7 +174,7 @@ exports.postEditPhoto = async (req, res) => {
   try {
     const event = await Event.findById(eventId);
 
-    if (!event || event.userId !== userId) {
+    if (!event || (!isAdmin && event.userId !== userId)) {
       return res.status(404).send('Evento não encontrado.');
     }
 
@@ -198,8 +201,9 @@ exports.postEditPhoto = async (req, res) => {
       .replace(/\s+/g, '-');
 
     const path = req.body.imageUrl;
+    const caption = req.body.caption || null;
 
-    await Photo.update(photoId, { originalName, fileName, path });
+    await Photo.update(photoId, { originalName, fileName, path, caption });
 
     res.redirect(`/galeria/${eventId}`);
   } catch (err) {
@@ -212,11 +216,12 @@ exports.postEditPhoto = async (req, res) => {
 exports.postDeletePhoto = async (req, res) => {
   const { eventId, photoId } = req.params;
   const userId = req.session.user.id;
+  const isAdmin = req.session.user.role === 'admin';
 
   try {
     const event = await Event.findById(eventId);
 
-    if (!event || event.userId !== userId) {
+    if (!event || (!isAdmin && event.userId !== userId)) {
       return res.status(404).send('Evento não encontrado.');
     }
 

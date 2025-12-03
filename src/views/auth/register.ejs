@@ -55,13 +55,15 @@
 
     <div class="form-group">
       <label for="confirmPassword">Confirmar senha</label>
-      <div class="password-wrapper"></div>
+      <div class="password-wrapper">
         <input
           type="password"
           id="confirmPassword"
           name="confirmPassword"
           required
-          minlength="6"
+          minlength="8"
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$"
+          title="Mínimo 8 caracteres, com letra maiúscula, minúscula, número e símbolo."
         />
         <span class="material-icons password-toggle">visibility</span>
       </div>

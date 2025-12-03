@@ -15,7 +15,7 @@ exports.listMyEvents = async (req, res) => {
 
     let eventos;
     if (isAdmin) {
-      eventos = await Event.findAll(filters);
+      eventos = await Event.findAll(filters); // deve trazer userName
     } else {
       eventos = await Event.findByUser(userId, filters);
     }
@@ -92,12 +92,18 @@ exports.postCreateEvent = async (req, res) => {
 exports.getEditEvent = async (req, res) => {
   const { id } = req.params;
   const userId = req.session.user.id;
+  const isAdmin = req.session.user.role === 'admin';
 
   try {
     const event = await Event.findById(id);
 
-    if (!event || event.userId !== userId) {
+    if (!event || (!isAdmin && event.userId !== userId)) {
       return res.status(404).send('Evento não encontrado.');
+    }
+
+    // normaliza data se vier como Date
+    if (event.eventDate instanceof Date) {
+      event.eventDate = event.eventDate.toISOString().split('T')[0];
     }
 
     res.render('events/form', {
@@ -115,6 +121,7 @@ exports.getEditEvent = async (req, res) => {
 exports.postEditEvent = async (req, res) => {
   const { id } = req.params;
   const userId = req.session.user.id;
+  const isAdmin = req.session.user.role === 'admin';
 
   const { error } = eventSchema.validate(req.body, { abortEarly: false });
 
@@ -136,7 +143,7 @@ exports.postEditEvent = async (req, res) => {
   try {
     const event = await Event.findById(id);
 
-    if (!event || event.userId !== userId) {
+    if (!event || (!isAdmin && event.userId !== userId)) {
       return res.status(404).send('Evento não encontrado.');
     }
 
@@ -151,11 +158,12 @@ exports.postEditEvent = async (req, res) => {
 exports.postDeleteEvent = async (req, res) => {
   const { id } = req.params;
   const userId = req.session.user.id;
+  const isAdmin = req.session.user.role === 'admin';
 
   try {
     const event = await Event.findById(id);
 
-    if (!event || event.userId !== userId) {
+    if (!event || (!isAdmin && event.userId !== userId)) {
       return res.status(404).send('Evento não encontrado.');
     }
 

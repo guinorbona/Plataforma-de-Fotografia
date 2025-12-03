@@ -1,12 +1,20 @@
-require('dotenv').config();
+
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
 const path = require('path');
 const app = require('./app'); 
 
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
+console.log(process.env.DB_HOST)
+console.log(process.env.DB_USER)
+console.log(process.env.DB_PASS)
+console.log(process.env.DB_NAME)
+console.log(process.env.DB_PORT)
+
 // Lê variáveis do .env
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 const ENABLE_HTTPS = process.env.ENABLE_HTTPS === 'true';
 
 // Função para iniciar HTTPS
